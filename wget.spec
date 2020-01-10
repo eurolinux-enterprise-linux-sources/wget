@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.12
-Release: 1.12%{?dist}
+Release: 5%{?dist}
 License: GPLv3+ and GFDL
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -13,7 +13,9 @@ Patch3: wget-1.12-openssl_timeout.patch
 Patch4: wget-1.12-fuzzed_response_seg_fault.patch
 Patch5: wget-1.12-bz736445.patch
 Patch6: wget-1.12-trust-server-names-option.patch
-Patch7: wget-1.12-CVE-2014-4877.patch
+Patch7: wget-1.12-tls_sni_support.patch
+Patch8: wget-1.12-parse-weblink-recursive.patch
+Patch9: wget-1.12-Coverity-scan-errors-fixes.patch
 
 Provides: webclient
 Requires(post): /sbin/install-info
@@ -38,7 +40,9 @@ support for Proxy servers, and configurability.
 %patch4 -p1 -b .fuzzed
 %patch5 -p1 -b .subjectAltName
 %patch6 -p1 -b .CVE-2010-2252
-%patch7 -p1 -b .CVE-2014-4877
+%patch7 -p1 -b .sni_support
+%patch8 -p1 -b .weblink
+%patch9 -p1 -b .coverity
 
 
 %build
@@ -77,17 +81,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_infodir}/*
 
 %changelog
-* Tue Dec 02 2014 Tomas Hozza <thozza@redhat.com> - 1.12-1.12
-- Fix CVE-2014-4877 wget: FTP symlink arbitrary filesystem access (#1169860)
+* Wed Apr 02 2014 Tomas Hozza <thozza@redhat.com> 1.12-5
+- Fix the parsing of weblink when doing recursive retrieving (#960137)
+- Fix errors found by static analysis of source code (#873216)
 
-* Thu Feb 06 2014 Tomas Hozza <thozza@redhat.com> 1.12-1.11
-- Add --trust-server-names option to fix CVE-2010-2252 (#833831)
+* Tue Apr 01 2014 Tomas Hozza <thozza@redhat.com> 1.12-4
+- Add SNI (Server Name Indication) support (#909604)
 
-* Mon Feb 03 2014 Tomas Hozza <thozza@redhat.com> 1.12-1.10
-- Build wget again with partial RELRO. LDFLAGS changed due to openssl rebase.
+* Thu Feb 06 2014 Tomas Hozza <thozza@redhat.com> 1.12-3
+- Add --trust-server-names option to fix CVE-2010-2252 (#1062190)
 
-* Fri Jan 31 2014 Tomas Hozza <thozza@redhat.com> 1.12-1.9
-- Fix wget to recognize certificates with alternative names (#1060113)
+* Fri Jan 31 2014 Tomas Hozza <thozza@redhat.com> 1.12-2
+- Fix wget to recognize certificates with alternative names (#736445)
 
 * Mon Oct 01 2012 Tomas Hozza <thozza@redhat.com> 1.12-1.8
 - Fixed wget from fuzzed http ending with segmentation fault (#714893)
