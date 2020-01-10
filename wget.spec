@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.12
-Release: 8%{?dist}
+Release: 10%{?dist}
 License: GPLv3+ and GFDL
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -17,6 +17,8 @@ Patch7: wget-1.12-tls_sni_support.patch
 Patch8: wget-1.12-parse-weblink-recursive.patch
 Patch9: wget-1.12-Coverity-scan-errors-fixes.patch
 Patch10: wget-1.12-CVE-2014-4877.patch
+Patch11: wget-1.12-rh1328458.patch
+Patch12: wget-1.12-mschret0.patch
 
 Provides: webclient
 Requires(post): /sbin/install-info
@@ -47,7 +49,8 @@ support for Proxy servers, and configurability.
 %patch8 -p1 -b .weblink
 %patch9 -p1 -b .coverity
 %patch10 -p1 -b .CVE-2014-4877
-
+%patch11 -p1 -b .rh1328458
+%patch12 -p1 -b .mschret0
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
@@ -89,6 +92,12 @@ make check
 
 
 %changelog
+* Tue Oct 04 2016 Petr Menšík <pemensik@redhat.com> - 1.12-10
+- #1166699 - 0 return code when url missing scheme
+
+* Mon Oct 03 2016 Petr Menšík <pemensik@redhat.com> - 1.12-9
+- Fix wget to include Host header on CONNECT as required by HTTP 1.1 (#1328458)
+
 * Fri Jan 08 2016 Tomas Hozza <thozza@redhat.com> - 1.12-8
 - Added build dependency needed to run HTTP unit tests (Related #1295847)
 - Explicitly disabled IDN/IRI support during build due to QA TPS test failures (Related #1295847)
