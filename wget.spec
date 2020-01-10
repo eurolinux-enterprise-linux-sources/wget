@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.12
-Release: 5%{?dist}
+Release: 5%{?dist}.1
 License: GPLv3+ and GFDL
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -16,6 +16,7 @@ Patch6: wget-1.12-trust-server-names-option.patch
 Patch7: wget-1.12-tls_sni_support.patch
 Patch8: wget-1.12-parse-weblink-recursive.patch
 Patch9: wget-1.12-Coverity-scan-errors-fixes.patch
+Patch10: wget-1.12-CVE-2014-4877.patch
 
 Provides: webclient
 Requires(post): /sbin/install-info
@@ -43,6 +44,7 @@ support for Proxy servers, and configurability.
 %patch7 -p1 -b .sni_support
 %patch8 -p1 -b .weblink
 %patch9 -p1 -b .coverity
+%patch10 -p1 -b .CVE-2014-4877
 
 
 %build
@@ -81,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_infodir}/*
 
 %changelog
+* Fri Oct 24 2014 Tomas Hozza <thozza@redhat.com> - 1.12-5.1
+- Fix CVE-2014-4877 wget: FTP symlink arbitrary filesystem access (#1156133)
+
 * Wed Apr 02 2014 Tomas Hozza <thozza@redhat.com> 1.12-5
 - Fix the parsing of weblink when doing recursive retrieving (#960137)
 - Fix errors found by static analysis of source code (#873216)
