@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.12
-Release: 5%{?dist}.1
+Release: 8%{?dist}
 License: GPLv3+ and GFDL
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -21,6 +21,8 @@ Patch10: wget-1.12-CVE-2014-4877.patch
 Provides: webclient
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
+# needed for test suite
+BuildRequires: perl-libwww-perl, perl-IO-Socket-SSL
 BuildRequires: openssl-devel, pkgconfig, texinfo, gettext, autoconf
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -53,7 +55,7 @@ if pkg-config openssl ; then
     CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
     LDFLAGS="-Wl,-z,relro `pkg-config --libs openssl`"; export LDFLAGS
 fi
-%configure --with-ssl --enable-largefile --enable-opie --enable-digest --enable-ntlm --enable-nls --enable-ipv6 --disable-rpath
+%configure --with-ssl --enable-largefile --enable-opie --enable-digest --enable-ntlm --enable-nls --enable-ipv6 --disable-rpath --disable-iri
 make %{?_smp_mflags}
 
 %install
@@ -82,9 +84,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/wget
 %{_infodir}/*
 
+%check
+make check
+
+
 %changelog
-* Fri Oct 24 2014 Tomas Hozza <thozza@redhat.com> - 1.12-5.1
-- Fix CVE-2014-4877 wget: FTP symlink arbitrary filesystem access (#1156133)
+* Fri Jan 08 2016 Tomas Hozza <thozza@redhat.com> - 1.12-8
+- Added build dependency needed to run HTTP unit tests (Related #1295847)
+- Explicitly disabled IDN/IRI support during build due to QA TPS test failures (Related #1295847)
+
+* Wed Jan 06 2016 Tomas Hozza <thozza@redhat.com> - 1.12-7
+- Run test suite during build (#1295847)
+
+* Fri Oct 24 2014 Tomas Hozza <thozza@redhat.com> - 1.12-6
+- Fix CVE-2014-4877 wget: FTP symlink arbitrary filesystem access (#1156134)
 
 * Wed Apr 02 2014 Tomas Hozza <thozza@redhat.com> 1.12-5
 - Fix the parsing of weblink when doing recursive retrieving (#960137)
