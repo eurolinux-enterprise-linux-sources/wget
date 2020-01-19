@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.14
-Release: 18%{?dist}
+Release: 18%{?dist}.1
 License: GPLv3+
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -41,6 +41,10 @@ Patch21: wget-1.14-CVE-2017-13090.patch
 Patch22: wget-1.14-digest-auth-qop-segfault-fix.patch
 # https://git.savannah.gnu.org/cgit/wget.git/commit/?id=1fc9c95ec144499e69dc8ec76dbe07799d7d82cd
 Patch23: wget-1.14-CVE-2018-0494.patch
+# http://git.savannah.gnu.org/cgit/wget.git/commit/?id=cbbeca2af4962a648a2373b35cf8e497e11d90fd
+# http://git.savannah.gnu.org/cgit/wget.git/commit/?id=692d5c5215de0db482c252492a92fc424cc6a97c
+# http://git.savannah.gnu.org/cgit/wget.git/commit/?id=562eacb76a2b64d5dc80a443f0f739bc9ef76c17
+Patch24: wget-1.14-CVE-2019-5953.patch
 
 Provides: webclient
 Provides: bundled(gnulib) 
@@ -85,6 +89,7 @@ support for Proxy servers, and configurability.
 %patch21 -p1 -b .CVE-2017-13090
 %patch22 -p1 -b .digest-auth-segfault
 %patch23 -p1 -b .CVE-2018-0494
+%patch24 -p1 -b .CVE-2019-5953
 
 %build
 if pkg-config openssl ; then
@@ -124,6 +129,9 @@ make check
 %{_infodir}/*
 
 %changelog
+* Fri Apr 05 2019 Tomas Hozza <thozza@redhat.com> - 1.14-18.1
+- Fix CVE-2019-5953 (#1696733)
+
 * Wed May 09 2018 Tomas Hozza <thozza@redhat.com> - 1.14-18
 - Fix CVE-2018-0494 (#1576106)
 
