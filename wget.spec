@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.14
-Release: 13%{?dist}
+Release: 15%{?dist}
 License: GPLv3+
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -28,6 +28,12 @@ Patch16: wget-1.14-CVE-2016-4971.patch
 # Test-ftp-iri-fallback test to fail. This additional change makes
 # Test-ftp-iri-fallback test pass again.
 Patch17: wget-1.14-support-non-ASCII-characters.patch
+Patch18: wget-1.14-add-openssl-tlsv11-tlsv12-support.patch
+# Fix for randomly failing unit test
+# combination of upstream commits without the support for Valgrind
+# commit 3eff3ad69a46364475e1f4abdf9412cfa87e3d6c
+# commit 2303793a626158627bdb2ac255e0f58697682b24
+Patch19: wget-1.14-fix-synchronization-in-Test-proxied-https-auth.patch
 
 Provides: webclient
 Provides: bundled(gnulib) 
@@ -66,6 +72,8 @@ support for Proxy servers, and configurability.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1 -b tls11_tls12
+%patch19 -p1 -b test_synch_fix
 
 %build
 if pkg-config openssl ; then
@@ -105,6 +113,13 @@ make check
 %{_infodir}/*
 
 %changelog
+* Fri May 05 2017 Tomas Hozza <thozza@redhat.com> - 1.14-15
+- Added TLSv1_1 and TLSv1_2 as secure-protocol values to help (#1439811)
+- Fixed synchronization in randomly failing unit test Test-proxied-https-auth (#1448440)
+
+* Wed Apr 12 2017 Tomas Hozza <thozza@redhat.com> - 1.14-14
+- TLS v1.1 and v1.2 can now be specified with --secure-protocol option (#1439811)
+
 * Mon Jun 20 2016 Tomas Hozza <thozza@redhat.com> - 1.14-13
 - Fix CVE-2016-4971 (#1345778)
 - Added support for non-ASCII URLs (Related: CVE-2016-4971)
