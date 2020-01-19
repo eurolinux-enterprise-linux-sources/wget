@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.14
-Release: 15%{?dist}.1
+Release: 18%{?dist}
 License: GPLv3+
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -36,6 +36,11 @@ Patch18: wget-1.14-add-openssl-tlsv11-tlsv12-support.patch
 Patch19: wget-1.14-fix-synchronization-in-Test-proxied-https-auth.patch
 Patch20: wget-1.14-CVE-2017-13089.patch
 Patch21: wget-1.14-CVE-2017-13090.patch
+# Partial backport without setting the default algorithm
+# http://git.savannah.gnu.org/cgit/wget.git/commit/?id=e9cc8b2f7c4678b832ad56f7119bba86a8db08ef
+Patch22: wget-1.14-digest-auth-qop-segfault-fix.patch
+# https://git.savannah.gnu.org/cgit/wget.git/commit/?id=1fc9c95ec144499e69dc8ec76dbe07799d7d82cd
+Patch23: wget-1.14-CVE-2018-0494.patch
 
 Provides: webclient
 Provides: bundled(gnulib) 
@@ -78,6 +83,8 @@ support for Proxy servers, and configurability.
 %patch19 -p1 -b .test_synch_fix
 %patch20 -p1 -b .CVE-2017-13089
 %patch21 -p1 -b .CVE-2017-13090
+%patch22 -p1 -b .digest-auth-segfault
+%patch23 -p1 -b .CVE-2018-0494
 
 %build
 if pkg-config openssl ; then
@@ -117,7 +124,13 @@ make check
 %{_infodir}/*
 
 %changelog
-* Tue Oct 24 2017 Tomas Hozza <thozza@redhat.com> - 1.14-15.1
+* Wed May 09 2018 Tomas Hozza <thozza@redhat.com> - 1.14-18
+- Fix CVE-2018-0494 (#1576106)
+
+* Mon Apr 23 2018 Tomas Hozza <thozza@redhat.com> - 1.14-17
+- Fix segfault when Digest Authentication header is missing 'qop' part (#1545310)
+
+* Tue Oct 24 2017 Tomas Hozza <thozza@redhat.com> - 1.14-16
 - Fixed various security flaws (CVE-2017-13089, CVE-2017-13090)
 
 * Fri May 05 2017 Tomas Hozza <thozza@redhat.com> - 1.14-15

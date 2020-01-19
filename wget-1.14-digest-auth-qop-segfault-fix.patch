@@ -1,0 +1,22 @@
+diff --git a/src/http.c b/src/http.c
+index 5ee1c93..b45c404 100644
+--- a/src/http.c
++++ b/src/http.c
+@@ -3728,7 +3728,7 @@ digest_authentication_encode (const char *au, const char *user,
+     md5_finish_ctx (&ctx, hash);
+     dump_hash (a2buf, hash);
+ 
+-    if (!strcmp(qop,"auth"))
++    if (qop && !strcmp(qop,"auth"))
+       {
+         /* RFC 2617 Digest Access Authentication */
+         /* generate random hex string */
+@@ -3776,7 +3776,7 @@ digest_authentication_encode (const char *au, const char *user,
+ 
+     res = xmalloc (res_size);
+ 
+-    if (!strcmp(qop,"auth"))
++    if (qop && !strcmp (qop, "auth"))
+       {
+         snprintf (res, res_size, "Digest "\
+                 "username=\"%s\", realm=\"%s\", nonce=\"%s\", uri=\"%s\", response=\"%s\""\
