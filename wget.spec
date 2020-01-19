@@ -1,7 +1,7 @@
 Summary: A utility for retrieving files using the HTTP or FTP protocols
 Name: wget
 Version: 1.14
-Release: 15%{?dist}
+Release: 15%{?dist}.1
 License: GPLv3+
 Group: Applications/Internet
 Url: http://www.gnu.org/software/wget/
@@ -34,6 +34,8 @@ Patch18: wget-1.14-add-openssl-tlsv11-tlsv12-support.patch
 # commit 3eff3ad69a46364475e1f4abdf9412cfa87e3d6c
 # commit 2303793a626158627bdb2ac255e0f58697682b24
 Patch19: wget-1.14-fix-synchronization-in-Test-proxied-https-auth.patch
+Patch20: wget-1.14-CVE-2017-13089.patch
+Patch21: wget-1.14-CVE-2017-13090.patch
 
 Provides: webclient
 Provides: bundled(gnulib) 
@@ -72,8 +74,10 @@ support for Proxy servers, and configurability.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
-%patch18 -p1 -b tls11_tls12
-%patch19 -p1 -b test_synch_fix
+%patch18 -p1 -b .tls11_tls12
+%patch19 -p1 -b .test_synch_fix
+%patch20 -p1 -b .CVE-2017-13089
+%patch21 -p1 -b .CVE-2017-13090
 
 %build
 if pkg-config openssl ; then
@@ -113,6 +117,9 @@ make check
 %{_infodir}/*
 
 %changelog
+* Tue Oct 24 2017 Tomas Hozza <thozza@redhat.com> - 1.14-15.1
+- Fixed various security flaws (CVE-2017-13089, CVE-2017-13090)
+
 * Fri May 05 2017 Tomas Hozza <thozza@redhat.com> - 1.14-15
 - Added TLSv1_1 and TLSv1_2 as secure-protocol values to help (#1439811)
 - Fixed synchronization in randomly failing unit test Test-proxied-https-auth (#1448440)
